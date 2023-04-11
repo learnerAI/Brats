@@ -44,5 +44,4 @@ jobs:
         port: ${{ secrets.SSH_PORT }}
         script: |
           cd /home/ubuntu/Scripts
-          pip install -r requirements.txt
-          python train.py
+          sudo python3 train.py
