@@ -1,0 +1,48 @@
+name: Train model on GCP
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  train:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      
+    - name: Authenticate with GCP using service account
+      uses: google-github-actions/auth@v0.4.2
+      with:
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
+    
+    - name: Echo SSH connection info
+      run: |
+        echo "Connecting to GCP instance at ${{ secrets.GCP_INSTANCE_IP }} as user ${{ secrets.GCP_INSTANCE_USERNAME }} with private key ${{ secrets.GCP_INSTANCE_PRIVATE_KEY }}"
+    
+    - name: SSH into GCP instance
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.GCP_INSTANCE_IP }}
+        username: ${{ secrets.GCP_USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: ${{ secrets.SSH_PORT }}
+        script: |
+          cd /home/ubuntu/Scripts
+          git pull
+
+
+
+    - name: Install dependencies and run train.py
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.GCP_INSTANCE_IP }}
+        username: ${{ secrets.GCP_USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: ${{ secrets.SSH_PORT }}
+        script: |
+          cd /home/ubuntu/Scripts
+          pip install -r requirements.txt
+          python train.py
