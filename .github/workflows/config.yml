@@ -31,7 +31,7 @@ jobs:
         port: ${{ secrets.SSH_PORT }}
         script: |
           cd /home/ubuntu/Scripts
-          git pull
+          git pull origin master
 
 
 
