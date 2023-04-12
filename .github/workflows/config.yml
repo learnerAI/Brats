@@ -44,4 +44,4 @@ jobs:
         port: ${{ secrets.SSH_PORT }}
         script: |
           cd /home/ubuntu/Scripts
-          nohup sudo python3 train.py &
+          nohup sudo python3 train.py >/dev/null 2>&1 &
